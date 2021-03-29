@@ -11,9 +11,9 @@ import datetime
 #function for connecting to the database:
 def connect():
     con = sq.connect("accpswd.db")
-    cur = con.cursor()
+    cur = con.cursor() //for cursor.
     cur.execute("CREATE TABLE IF NOT EXISTS exel('uniqueID' INTEGER PRIMARY KEY  ,account TEXT, name_ TEXT, userid TEXT, 'password' TEXT, note TEXT ,'date' TEXT)")
-    con.commit()
+    con.commit() 
     con.close()
 connect()  #necessary to call or the table will not be created
 
