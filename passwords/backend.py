@@ -3,77 +3,81 @@ This is a backend program for the haccpsswd
 tkinter frontend.
 """
 #import reqd:
-import mysql as sq
+import sqlite3 as sq
 import datetime
+import os
+import sys
 
 #making functions:
 
 #function for connecting to the database:
-def connect():
-    con = sq.connect("accpswd.db")
+def connect(person_file):
+    con = sq.connect("person_account_files/%s.db"%person_file)
     cur = con.cursor() 
-    cur.execute("CREATE TABLE IF NOT EXISTS Account('uniqueID' INTEGER PRIMARY KEY  ,Acc_name TEXT, userId TEXT, 'Password' TEXT, Note TEXT ,'Date_time' TEXT,)")
+    cur.execute("CREATE TABLE IF NOT EXISTS Account('uniqueID' INTEGER PRIMARY KEY  ,Account_Name TEXT, UserId TEXT, 'Password' TEXT, Note TEXT ,'Date_time' TEXT)")
     con.commit() 
     con.close()
-connect()  #necessary to call or the table will not be created
+# connect()  #necessary to call or the table will not be created
 
 #function for adding:
 today_date = datetime.date.today()#to convert into dd mm yyyy
 new_today_date = today_date.strftime("%d/%m/%Y")       
 date_data = str(new_today_date)#adding datevariable outside def indent.  
-def add(account,name,userid,password,note,date):
-    con = sq.connect("accpswd.db")
+
+def add(person_file,account,name,userid,password,note,date):
+    con = sq.connect("person_account_files/%s.db"%person_file)
     cur = con.cursor()
-    cur.execute("INSERT INTO exel VALUES(NULL,?,?,?,?,?,?)",(account,name,userid,password,note,date))
+    cur.execute("INSERT INTO Account VALUES(NULL,?,?,?,?,?)",(account,userid,password,note,date))
     con.commit()
     con.close()
 
 #function to delete:
-def remove(uniqueID):
-    con = sq.connect("accpswd.db")
+def remove(person_file,uniqueID):
+    con = sq.connect("person_account_files/%s.db"%person_file)
     cur = con.cursor()
-    cur.execute("DELETE FROM exel WHERE uniqueID=?",(uniqueID,)) #dont forget the comma.:)))
+    cur.execute("DELETE FROM Account WHERE uniqueID=?",(uniqueID,)) #dont forget the comma.:)))
     con.commit()
     con.close()
 
 #function to search entry:
-def search(account='',name='',userid='',note=''):
-    con = sq.connect("accpswd.db")
+def search(person_file,account='',name='',userid='',note=''):
+    con = sq.connect("person_account_files/%s.db"%person_file)
     cur = con.cursor()
-    cur.execute("SELECT * FROM exel WHERE account=? OR name_=? OR userid=? OR note=?",(account,name,userid,note)) 
+    cur.execute("SELECT * FROM Account WHERE account=? OR userid=? OR note=?",(account,userid,note)) 
     data = cur.fetchall()
     # con.commit()....no need to save any thing
     con.close()
     return data
     
 #function to veiw_all entries:
-def view():
-    con = sq.connect("accpswd.db")
+def view(person_file):
+    con = sq.connect("person_account_files/%s.db"%person_file)
     cur = con.cursor()
-    cur.execute("SELECT * FROM exel ") 
+    cur.execute("SELECT * FROM Account ") 
     data_all = cur.fetchall()
     # con.commit()....no need to save any thing
     con.close()
     return data_all
 
 #fuction to update entry:
-def update(account,name,userid,password,note,date,uniqueID):
-    con = sq.connect("accpswd.db")
+def update(person_file,account,name,userid,password,note,date,uniqueID):
+    con = sq.connect("person_account_files/%s.db"%person_file)
     cur = con.cursor()
-    cur.execute("UPDATE exel SET account=?,name_=?,userid=?,'password'=?,note=?,'date'=? WHERE uniqueID=?",(account,name,userid,password,note,date,uniqueID))
+    cur.execute("UPDATE Account SET account=?,userid=?,'password'=?,note=?,'date'=? WHERE uniqueID=?",(account,name,userid,password,note,date,uniqueID))
     con.commit()
     con.close()
     print("successfully updated account to : ?   \n",(account))
 
 #function to clearall the database
-def clear_all():
+def clear_all(person_file):
     
-    con = sq.connect("accpswd.db")
+    con = sq.connect("person_account_files/%s.db"%person_file)
     cur = con.cursor()
-    cur.execute("DELETE FROM exel") #don't forget the comma.:)))
+    cur.execute("DELETE FROM Account") #don't forget the comma.:)))
     con.commit()
     con.close()
     print("successfully cleared all entries    \n")
+
 
 
 
