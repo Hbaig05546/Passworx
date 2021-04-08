@@ -17,17 +17,17 @@ def connect(person_file):
     cur.execute("CREATE TABLE IF NOT EXISTS Account('uniqueID' INTEGER PRIMARY KEY  ,Account_Name TEXT, UserId TEXT, 'Password' TEXT, Note TEXT ,'Date_time' TEXT)")
     con.commit() 
     con.close()
-# connect()  #necessary to call or the table will not be created
+#connect() #necessary to call or the table will not be created
 
 #function for adding:
 today_date = datetime.date.today()#to convert into dd mm yyyy
 new_today_date = today_date.strftime("%d/%m/%Y")       
 date_data = str(new_today_date)#adding datevariable outside def indent.  
 
-def add(person_file,account,name,userid,password,note,date):
+def add(person_file,Account_Name,userid,password,note,date):
     con = sq.connect("person_account_files/%s.db"%person_file)
     cur = con.cursor()
-    cur.execute("INSERT INTO Account VALUES(NULL,?,?,?,?,?)",(account,userid,password,note,date))
+    cur.execute("INSERT INTO Account VALUES(NULL,?,?,?,?,?)",(Account_Name,userid,password,note,date))
     con.commit()
     con.close()
 
@@ -40,10 +40,10 @@ def remove(person_file,uniqueID):
     con.close()
 
 #function to search entry:
-def search(person_file,account='',name='',userid='',note=''):
+def search(person_file,account='',userid='',note=''):
     con = sq.connect("person_account_files/%s.db"%person_file)
     cur = con.cursor()
-    cur.execute("SELECT * FROM Account WHERE account=? OR userid=? OR note=?",(account,userid,note)) 
+    cur.execute("SELECT * FROM Account WHERE Account_Name=? OR UserId=? OR Note=?",(account,userid,note)) 
     data = cur.fetchall()
     # con.commit()....no need to save any thing
     con.close()
@@ -60,10 +60,10 @@ def view(person_file):
     return data_all
 
 #fuction to update entry:
-def update(person_file,account,name,userid,password,note,date,uniqueID):
+def update(person_file,account,userid,password,note,date,uniqueID):
     con = sq.connect("person_account_files/%s.db"%person_file)
     cur = con.cursor()
-    cur.execute("UPDATE Account SET account=?,userid=?,'password'=?,note=?,'date'=? WHERE uniqueID=?",(account,name,userid,password,note,date,uniqueID))
+    cur.execute("UPDATE Account SET Account_Name=?,UserId=?,'Password'=?,Note=?,'Date_time'=? WHERE uniqueID=?",(account,userid,password,note,date,uniqueID))
     con.commit()
     con.close()
     print("successfully updated account to : ?   \n",(account))
