@@ -34,9 +34,9 @@ def person_account_file_holder(acc_file_name):
     global file_name
     global name
     file_name = acc_file_name
-    con = sq.connect("Global_Accounts")
+    con = sq.connect("Global_Accounts.db")
     cur = con.cursor()
-    cur.execute("SELECT Name_ FROM PERSON WHERE Global_user_name=? ",(acc_file_name,))
+    cur.execute("SELECT Name_ FROM Person WHERE Global_user_name=? ",(acc_file_name,))
     Name = cur.fetchall()
     con.commit() 
     con.close()
