@@ -3,11 +3,13 @@
 from tkinter import *
 import tkinter as tk
 from tkinter import scrolledtext as st
-import top_level_backend as tlb
-import sqlite3 as sq
+from backend import *
+import mysql.connector as sq
 import accpsswd
 import re #for psswd check
 
+testdb = test_db()
+tlb = top_Database()
 #global variables:
 global checkbutton,e3,e2
    
@@ -53,7 +55,8 @@ def signin(*event):
         if tlb.security_check(gun,gp):
             print("access granted")
             signinwindow.destroy()
-            accpsswd.person_account_file_holder(gun)
+            accpsswd.name_holder(global_user_name.get())
+            accpsswd()
             
 
         else:
@@ -105,7 +108,7 @@ def signin(*event):
     signupButton = Button(signinwindow, text='Sign In', fg="black" ,bg="skyblue",command=Allow_access)#, command=storeGlobalPwd) # This creates the button with the text 'signup', when you click it, the command 'fssignup' will run. which is the def
     signupButton.grid(row=6,column=3, sticky=W)
     #back to register page:
-    backButton = Button(signinwindow, text='back to registration', fg="black" ,bg="skyblue",command=lambda:[Register_window(),signinwindow.destroy()])#, command=storeGlobalPwd) # This creates the button with the text 'signup', when you click it, the command 'fssignup' will run. which is the def
+    backButton = Button(signinwindow, text='back to registration', fg="black" ,bg="skyblue",command=Register_window())#, command=storeGlobalPwd) # This creates the button with the text 'signup', when you click it, the command 'fssignup' will run. which is the def
     backButton.grid(row=7,column=3, sticky=W)
     
     signinwindow.mainloop()
@@ -132,6 +135,7 @@ def Register_window(*event):
                 val = False   
             if len(passwd) > 20:
                 print('length should be not be greater than 20')
+                
                 val = False    
             if not any(char.isdigit() for char in passwd):
                 l6["text"]="Password must contain \nat least one numeral [1-9]"
