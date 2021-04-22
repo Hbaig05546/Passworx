@@ -23,8 +23,9 @@ try:
 except ImportError:
     import Tkinter as tk
 # importing the backend.py file to utilise the functions.
-from backend import DataBase
+from backend import DataBase,top_Database
 database = DataBase()
+person = top_Database()
 
 # global vars:
 global e4, checkbutton
@@ -33,47 +34,51 @@ global e4, checkbutton
 # note the functions should be made before calling them in the buttons using command
 # for viewall button to insert all entries into listbox:
 # to make available in global space
-name = "name"
+# name = "name"
 
+## Function to get the logged user
 
-def name_holder(global_user_name):
-    global name
-    con = sq.connect(
-                    host="localhost",
-                    user="hbaig055",
-                    password="05546",
-                    database="accpsswd"
-                    )
-    cur = con.cursor()
-    cur.execute(
-        "SELECT Name_ FROM Person WHERE Global_user_name = %s ", (global_user_name,))
-    Name = cur.fetchall()
-    con.commit()
-    con.close()
-    name = str(Name)
-    badchars = [",", "[", "'", "(", ")", "]"]
-    for i in badchars:
-        name = name.replace(i, "")
-    accpsswd(global_user_name)
+# def name_holder(global_user_name):
+#     global name
+#     #change this to your user id and password
+#     con = sq.connect(
+#                     host="localhost",
+#                     user="root",
+#                     password="toor",
+#                     database="accpsswd"
+#                     )
+#     cur = con.cursor()
+#     cur.execute(
+#         "SELECT Name_ FROM Person WHERE Global_user_name = %s ", (global_user_name,))
+#     Name = cur.fetchall()
+#     con.commit()
+#     con.close()
+#     name = str(Name)
+#     badchars = [",", "[", "'", "(", ")", "]"]
+#     for i in badchars:
+#         # print(badchars)
+#         name = name.replace(i, "")
+#         # name = name.join(i)
+#     accpsswd()
     # passing and hence creating a db file in the name of the person's userid
 
 
 def accpsswd(username):
-
+    print(username)
     def listbox_insert():
         lb.delete(0, END)
-        for entry in database.view():
+        for entry in database.view(person.get_name_or_id(username,FALSE)):
             lb.insert(END, entry)
 
     def searcher():
         lb.delete(0, END)
-        for entry in database.search(account_text.get(), userid_text.get(), note_text.get()):
+        for entry in database.search(account_text.get(), userid_text.get(), note_text.get(),person.get_name_or_id(username,FALSE)):
             lb.insert(END, entry)
 
     def adder():
         try:
             database.add(account_text.get(), userid_text.get(),
-                        password_text.get(), note_text.get(), date_text.get())
+                        password_text.get(), note_text.get(), date_text.get(),person.get_name_or_id(username,FALSE))
             lb.delete(0, END)
             lb.insert(END, 'account : '+account_text.get(), 'userid : '+userid_text.get(),
                     'password : '+password_text.get(), 'note : '+note_text.get(), 'date : '+date_text.get())
@@ -82,7 +87,7 @@ def accpsswd(username):
             lb.insert(0, ' Please check if all the entries are correct :( ')
             
     def clearer():
-        database.clear_all()
+        database.clear_all(person.get_name_or_id(username,FALSE))
         lb.delete(0, END)
         lb.insert(0, ' ALL ENTRIES HAVE BEEN CLEARED :) ')
 
@@ -107,7 +112,7 @@ def accpsswd(username):
     def deleter():
         database.remove(selected_entry[0])
         lb.delete(0, END)  # to refersh the page.
-        for entry in database.view():
+        for entry in database.view(person.get_name_or_id(username,FALSE)):
             lb.insert(END, entry)
 
     # for update button:
@@ -140,6 +145,8 @@ def accpsswd(username):
     window.title('haccpswd')
 
     # labels:
+    # person.get_name(username)
+    name = person.get_name_or_id(username)
 
     l1 = Label(window, text='Welcome %s ...' % name)
     l1.grid(row='0', column='0', pady=20, sticky="we")
