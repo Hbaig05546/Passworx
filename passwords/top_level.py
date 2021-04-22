@@ -3,16 +3,17 @@
 from tkinter import *
 import tkinter as tk
 from tkinter import scrolledtext as st
+import threading
 from backend import *
 import mysql.connector as sq
 import accpsswd
 import re #for psswd check
-
+import pygubu
 testdb = test_db()
 tlb = top_Database()
 #global variables:
 global checkbutton,e3,e2
-   
+global roots
 
 def showSignature():
     text = 'Group09\n\t  \n\n\tMembers: \n\t Hamzah Khalid Baig   [19CO20] \n\t Uzair Shahid Kazi    [19CO22] \n\t Aaftab Harun khan    [19CO23] \n\t Mohammad Ziya-ul-Haq [19CO37]'
@@ -36,8 +37,6 @@ def about(*event):
 
 
 
-
-
 #<<<<<<<<<<<<<<<<<<<<<<<<<<<<!!!! SIGN-IN WINDOW FUNCTION !!!!!!>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>>
 def signin(*event):
     roots.destroy()
@@ -55,8 +54,8 @@ def signin(*event):
         if tlb.security_check(gun,gp):
             print("access granted")
             signinwindow.destroy()
-            accpsswd.name_holder(global_user_name.get())
-            accpsswd()
+            # accpsswd.name_holder(global_user_name.get())
+            accpsswd.accpsswd(global_user_name.get())
             
 
         else:
@@ -188,7 +187,8 @@ def Register_window(*event):
         roots.destroy()
     #database nested function and functions to get the strvars:
     def adder():
-        if entry_check(global_user_name.get(),global_password.get(),email.get(),mobile.get()):
+        # if entry_check(global_user_name.get(),global_password.get(),email.get(),mobile.get()):
+        if True:
             try:
                 tlb.add(name.get(),global_user_name.get(),global_password.get(),email.get(),mobile.get())
                 signin()
@@ -296,7 +296,9 @@ def Register_window(*event):
 
 Register_window() #STARTING REGISTER WINDOW..
 
-
+# if __name__ == '__main__':
+#     app = loadScreen()
+#     app.run()
 
 #login  <<<<<<<<<<<<<<<<<<<< LOGIN PAGE IF ACC EXISTS >>>>>>>>>>>>>>>>>>>>>>>>>
  # This just makes the window keep open, we will destroy it soon

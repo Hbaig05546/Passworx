@@ -19,8 +19,8 @@ class test_db:
     def create_database(self):
         self.con = sq.connect(
                                 host="localhost",
-                                user="hbaig055",
-                                password="05546",
+                                user="root",
+                                password="toor",
                                 database="accpsswd"
                                 )
         self.cur = self.con.cursor()
@@ -33,8 +33,8 @@ class top_Database:
     def __init__(self):
         self.con = sq.connect(
                                 host="localhost",
-                                user="hbaig055",
-                                password="05546",
+                                user="root",
+                                password="toor",
                                 database="accpsswd"
                                 )
         self.cur = self.con.cursor()
@@ -75,13 +75,27 @@ class top_Database:
         else:
             return False
 
+    def get_name_or_id(self,Global_user_name,is_name=True):
+        
+        self.cur.execute("SELECT PersonId,Name_ FROM Person WHERE Global_user_name=%s",(Global_user_name,))  # Don't remove the , because Since you are using mysql module, cur.execute requires a tuple as parameters
+        # self.cur.execute("SELECT Name_ from Person where Global_user_name=%s",(Global_user_name))
+        name = self.cur.fetchone() # fetchall() => [(1,asd)], fetchone => (1,as)
+        name = list(name)
+        print(name)
+
+        if is_name:
+            return name[1]
+        else:
+            return name[0]
+        
+
 
 class DataBase:
     def __init__(self):
         self.con = sq.connect(
                                 host="localhost",
-                                user="hbaig055",
-                                password="05546",
+                                user="root",
+                                password="toor",
                                 database="accpsswd"
                              )
         self.cur = self.con.cursor()
@@ -94,10 +108,10 @@ class DataBase:
     new_today_date = today_date.strftime("%d/%m/%Y")
     date_data = str(new_today_date)  # adding datevariable outside def indent.
 
-    def add(self, Account_Name, userid, password, note, date):
-        id = 
-        self.cur.execute("INSERT INTO Accounts (Account_Name, UserId, Password, Note, Date_time) VALUES (%s,%s,%s,%s,%s)",
-                         (Account_Name, userid, password, note, date))
+    def add(self, Account_Name, userid, password, note, date,person_id):
+    
+        self.cur.execute("INSERT INTO Accounts (Account_Name, UserId, Password, Note, Date_time,Person_Id) VALUES (%s,%s,%s,%s,%s,%s)",
+                         (Account_Name, userid, password, note, date,person_id))
         self.con.commit()
 
     # function to delete:
@@ -107,16 +121,16 @@ class DataBase:
         self.con.commit()
 
     # function to search entry:
-    def search(self, account='', userid='', note=''):
+    def search(self, account='', userid='', note='', person_id=''):
         self.cur.execute(
-            "SELECT * FROM Accounts WHERE Account_Name=%s OR UserId=%s OR Note=%s", (account, userid, note))
+            "SELECT * FROM Accounts WHERE Account_Name=%s OR UserId=%s OR Note=%s AND Person_Id=%s ", (account, userid, note,person_id))
         data = self.cur.fetchall()
         # con.commit()....no need to save any thing
         return data
 
     # function to veiw_all entries:
-    def view(self):
-        self.cur.execute("SELECT * FROM Accounts ")
+    def view(self,person_id):
+        self.cur.execute("SELECT * FROM Accounts where Person_Id =%s ",(person_id,))
         data_all = self.cur.fetchall()
         # con.commit()....no need to save any thing
         return data_all
@@ -129,8 +143,8 @@ class DataBase:
         print("successfully updated account to : %s   \n", (account))
 
     # function to clearall the database
-    def clear_all(self):
-        self.cur.execute("DELETE FROM Accounts")  # don't forget the comma.:)))
+    def clear_all(self,person_id):
+        self.cur.execute("DELETE FROM Accounts where Person_Id=%s",(person_id,))  # don't forget the comma.:)))
         self.con.commit()
         print("successfully cleared all entries    \n")
 
@@ -146,8 +160,8 @@ class DataBase:
 # #database testing:
 # mydb = sq.connect(
 #   host="localhost",
-#   user="hbaig055",
-#   password="05546",
+#   user="root",
+#   password="toor",
 #   database="accpsswd"
  
 # )
